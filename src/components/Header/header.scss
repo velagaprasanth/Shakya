@@ -67,15 +67,15 @@ header {
             }
 
             .logo-part {
-                max-width: 100px;
-                height: 100px;
+                max-width: 150px;
+                height: 150px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 
                 @media(max-width: 544px) {
-                    max-width: 85px;
-                    height: 85px;
+                    max-width: 120px;
+                    height: 120px;
                 }
 
                 img {
