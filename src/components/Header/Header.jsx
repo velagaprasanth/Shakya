@@ -2,32 +2,16 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../../assets/images/logo.png";
 import "./header.scss";
-import { HiShoppingCart } from "react-icons/hi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoCloseSharp } from "react-icons/io5";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { handleCategory } from '../../store/features/filterSlice';
 
 const Header = () => {
     const [hamburger, setHamburger] = useState(true);
     const [nav, setNav] = useState(false);
-    const cart = useSelector((state) => state.cart.cart);
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const getTotalQuantity = () => {
-        let total = 0;
-        cart.forEach((item) => {
-            total += item.quantity;
-        });
-        return total;
-    };
-    const getTotalPrice = () => {
-        let total = 0;
-        cart.forEach((item) => {
-            total += Math.round(item.price) * item.quantity;
-        });
-        return total;
-    };
     const changeCategory = (category) => {
         dispatch(handleCategory(category));
         navigate('/shop')
@@ -56,11 +40,6 @@ const Header = () => {
                         </ul>
                     </div>
                     <div className="header-right">
-                        <p className='price'>£{getTotalPrice()}.00</p>
-                        <div className='cart'>
-                            <Link to="/cart"><HiShoppingCart /></Link>
-                            <p className='cart-quantity'>{getTotalQuantity()}</p>
-                        </div>
                         <div className="hamburger-menu">
                             {hamburger ? (<button onClick={() => { openHamburger() }}><GiHamburgerMenu /></button>) : (<button onClick={() => { closeHamburger() }}><IoCloseSharp /></button>)}
                         </div>

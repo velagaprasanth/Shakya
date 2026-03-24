@@ -5,6 +5,12 @@ export const data = [
         title: 'Armchair with Head Rester',
         content: 'Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra.',
         image: 'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/armchair.jpg',
+        images: [
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/armchair.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/fancy-chairs.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/chair.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2017/11/chair.jpg'
+        ],
         price: 62,
     }, {
         id: 2,
@@ -12,6 +18,12 @@ export const data = [
         title: 'Beige Living Room Sofa',
         content: 'Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra.',
         image: 'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/sofa.jpg',
+        images: [
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/sofa.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/round-sofa.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/safa-2.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/chair-1.jpg'
+        ],
         oldPrice: 659,
         price: 599,
     }, {
@@ -20,6 +32,12 @@ export const data = [
         title: 'Classic Wooden Table',
         content: 'Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra.',
         image: 'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/table.jpg',
+        images: [
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/table.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/desk-table.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/study-table.jpg',
+            'https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/2018/01/wooden-study-table.jpg'
+        ],
         oldPrice: 90,
         price: 85,
     }, {
