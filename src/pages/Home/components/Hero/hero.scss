@@ -16,26 +16,31 @@
         justify-content: center;
 
         @media(max-width: 922px) {
-            height: 400px;
+            height: 350px;
         }
 
         @media(max-width: 767px) {
-            height: 300px;
+            height: 280px;
+        }
+
+        @media(max-width: 544px) {
+            height: 220px;
         }
     }
 
     .carousel-indicators {
         display: flex;
         justify-content: center;
-        gap: 10px;
-        padding: 10px 0 0 0;
+        gap: 8px;
+        padding: 8px 0 0 0;
         position: relative;
         bottom: 0;
-        margin-top: -10px;
+        margin-top: -8px;
+        flex-wrap: wrap;
 
         .indicator-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             border: none;
             background-color: #ccc;
@@ -44,12 +49,16 @@
 
             &:hover {
                 background-color: #78909c;
-                transform: scale(1.2);
             }
 
             &.active {
                 background-color: $main-color;
-                transform: scale(1.3);
+                transform: scale(1.2);
+            }
+
+            @media(max-width: 544px) {
+                width: 8px;
+                height: 8px;
             }
         }
     }
