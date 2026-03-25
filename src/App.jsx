@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Product from './pages/Product/Product';
 import Connect from './components/Connect/Connect';
 import Contact from './components/Contact/Contact';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/shop/:id" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
