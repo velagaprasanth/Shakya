@@ -17,9 +17,23 @@ const Hero = () => {
         return () => clearInterval(interval);
     }, [slides.length]);
 
+    const goToSlide = (index) => {
+        setCurrentSlide(index);
+    };
+
     return (
         <div data-aos="zoom-in" className="hero page-container mb-4">
             <div className="hero-content" style={{ backgroundImage: `url(${slides[currentSlide]})` }}>
+            </div>
+            <div className="carousel-indicators">
+                {slides.map((_, index) => (
+                    <button
+                        key={index}
+                        className={`indicator-dot ${index === currentSlide ? 'active' : ''}`}
+                        onClick={() => goToSlide(index)}
+                        aria-label={`Go to slide ${index + 1}`}
+                    />
+                ))}
             </div>
         </div>
     )

@@ -2,13 +2,18 @@
 @import "../../../../vendors/variables";
 
 .hero {
+    position: relative;
+
     .hero-content {
         height: 524px;
         background-repeat: no-repeat;
-        background-size: cover;
-        background-position: bottom right;
+        background-size: contain;
+        background-position: center;
         padding: 80px 100px;
         transition: background-image 0.5s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         @media(max-width: 922px) {
             height: 430px;
@@ -17,20 +22,33 @@
         @media(max-width: 767px) {
             padding: 70px 0 70px 40px;
         }
+    }
 
-        h1 {
-            font-size: 4rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: $main-color;
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 20px 0;
+        position: relative;
+        bottom: 0;
 
-            @media(max-width: 922px) {
-                font-size: 40px;
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #78909c;
+                transform: scale(1.2);
             }
 
-            @media(max-width: 544px) {
-                font-size: 32px;
+            &.active {
+                background-color: $main-color;
+                transform: scale(1.3);
             }
         }
     }
-}
