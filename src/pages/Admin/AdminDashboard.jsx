@@ -6,6 +6,15 @@ import ProductsList from './components/ProductsList';
 import CategoriesList from './components/CategoriesList';
 import AdminLogin from './AdminLogin';
 
+/**
+ * AdminDashboard Component
+ * Main admin panel for managing products and categories
+ * Features:
+ * - Authentication check (email verification)
+ * - Product CRUD operations
+ * - Category management
+ * - Role-based access control (only shakyafurnitures@gmail.com)
+ */
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -15,11 +24,13 @@ const AdminDashboard = () => {
     const [user, setUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
 
+    // Auth initialization and listener setup
     useEffect(() => {
-        // Check if user is already logged in
+        // Check if user already has an active session
         checkAuth();
 
-        // Listen for auth changes
+        // Set up real-time listener for auth state changes
+        // This handles session refresh and logout
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (session && session.user.email === 'shakyafurnitures@gmail.com') {
                 setUser(session.user);
@@ -32,10 +43,12 @@ const AdminDashboard = () => {
         return () => subscription?.unsubscribe();
     }, []);
 
+    // Check if user has an existing valid session
     const checkAuth = async () => {
         try {
             const { data: { session } } = await supabase.auth.getSession();
             
+            // Verify session exists and email matches authorized admin
             if (session && session.user.email === 'shakyafurnitures@gmail.com') {
                 setUser(session.user);
             }
@@ -105,11 +118,13 @@ const AdminDashboard = () => {
     };
 
     // Show loading state while checking auth
+    // This prevents flash of login page if user has valid session
     if (authLoading) {
         return <div className="admin-dashboard page-container"><p>Checking authentication...</p></div>;
     }
 
-    // Show login page if not authenticated
+    // Show login page if user is not authenticated
+    // Only authenticated users with correct email can access dashboard
     if (!user) {
         return <AdminLogin onLoginSuccess={checkAuth} />;
     }

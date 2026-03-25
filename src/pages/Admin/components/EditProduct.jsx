@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
 
+/**
+ * EditProduct Component
+ * Modal form for editing existing products
+ * Features:
+ * - File upload for product images (stores to Supabase Storage)
+ * - Image preview before submission
+ * - Updates product data in database
+ * - Form validation
+ */
 const EditProduct = ({ product, onClose, onProductUpdated }) => {
     const [formData, setFormData] = useState({
         title: product.title,
@@ -21,10 +30,12 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
         }));
     };
 
+    // Handle image file selection and preview
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
+            // Create local preview using FileReader
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);

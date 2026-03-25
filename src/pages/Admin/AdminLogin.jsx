@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import './admin.scss';
 
+/**
+ * AdminLogin Component
+ * Handles admin authentication with email/password
+ * Only allows shakyafurnitures@gmail.com to access the admin panel
+ * Uses Supabase Auth service for secure login
+ */
 const AdminLogin = ({ onLoginSuccess }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
