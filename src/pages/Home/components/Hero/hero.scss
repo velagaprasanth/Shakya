@@ -5,22 +5,22 @@
     position: relative;
 
     .hero-content {
-        height: 524px;
+        height: 500px;
         background-repeat: no-repeat;
         background-size: contain;
         background-position: center;
-        padding: 80px 100px;
+        padding: 0;
         transition: background-image 0.5s ease-in-out;
         display: flex;
         align-items: center;
         justify-content: center;
 
         @media(max-width: 922px) {
-            height: 430px;
+            height: 400px;
         }
 
         @media(max-width: 767px) {
-            padding: 70px 0 70px 40px;
+            height: 300px;
         }
     }
 
@@ -28,9 +28,10 @@
         display: flex;
         justify-content: center;
         gap: 10px;
-        padding: 20px 0;
+        padding: 10px 0 0 0;
         position: relative;
         bottom: 0;
+        margin-top: -10px;
 
         .indicator-dot {
             width: 12px;
@@ -52,3 +53,4 @@
             }
         }
     }
+}
