@@ -46,7 +46,7 @@ const Product = () => {
                     <div className="product-image-container">
                         <img src={mainImage} alt="product" className='main-product-image w-100' />
                     </div>
-                    {images.length > 1 && (
+                    {images.length > 0 && (
                         <div className="product-thumbnails mt-3">
                             {images.map((img, index) => (
                                 <img 
