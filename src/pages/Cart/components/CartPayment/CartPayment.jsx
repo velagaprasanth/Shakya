@@ -21,6 +21,38 @@ const CartPayment = () => {
         });
         return total;
     };
+
+    const handleCheckout = () => {
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+
+        const phoneNumber = "919533556501"; // WhatsApp format: country code + number
+        
+        // Build cart details message
+        let cartDetails = `Hi! 👋\n\nI'd like to place an order:\n\n`;
+        
+        let totalRupees = 0;
+        cart.forEach((item, index) => {
+            const priceInRupees = Math.round(item.price * 100); // Adjust multiplier based on your currency conversion
+            const itemTotal = priceInRupees * item.quantity;
+            totalRupees += itemTotal;
+            
+            cartDetails += `${index + 1}. ${item.title}\n`;
+            cartDetails += `   Category: ${item.category}\n`;
+            cartDetails += `   Price: ₹${priceInRupees} × ${item.quantity} = ₹${itemTotal}\n`;
+            cartDetails += `   Image: ${item.image}\n\n`;
+        });
+        
+        cartDetails += `━━━━━━━━━━━━━━━━━━━━━\n`;
+        cartDetails += `Total Items: ${getTotalQuantity()}\n`;
+        cartDetails += `Total Price: ₹${totalRupees}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        cartDetails += `Please confirm availability and provide delivery details.\n\nThank you!`;
+        
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(cartDetails)}`;
+        window.open(whatsappUrl, '_blank');
+    };
     return (
         <div className="cart-payment">
 
@@ -72,9 +104,9 @@ const CartPayment = () => {
 
                                             <div className="d-flex justify-content-between mb-5">
                                                 <h5 className="text-uppercase">Total price</h5>
-                                                <h5>£ {getTotalPrice()}.00</h5>
+                                                <h5>₹ {getTotalPrice()}.00</h5>
                                             </div>
-                                            <button type="button" className="general-button">Proceed To Checkout</button>
+                                            <button type="button" className="general-button" onClick={handleCheckout}>Proceed To Checkout</button>
                                         </div>
                                     </div>
                                 </div>

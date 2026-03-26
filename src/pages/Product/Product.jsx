@@ -74,16 +74,41 @@ const Product = () => {
 
     const getProductImages = () => {
         if (!product) return [];
+        // Always start with the main product image
+        const imageList = [product.image];
+        
+        // Add additional images if they exist
         if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-            return product.images.slice(0, 4);
+            // Filter out duplicates and add the additional images
+            const additionalImages = product.images.filter(img => img !== product.image);
+            imageList.push(...additionalImages.slice(0, 3)); // Add up to 3 more images
         }
-        // Fallback: if images array doesn't exist, create one from main image
-        return product.image ? [product.image] : [];
+        
+        return imageList.filter(img => img); // Filter out any empty/null values
     };
 
     const handlePlaceOrder = () => {
         const phoneNumber = "919533556501"; // WhatsApp format: country code + number
-        const message = `Hi, I'm interested in ordering: ${product?.title}`;
+        
+        // Convert price to rupees (assuming current price is in some other currency, multiply by 100 for conversion)
+        const priceInRupees = Math.round(product?.price * 100); // Adjust multiplier based on your currency conversion
+        
+        // Get the current displayed image
+        const images = getProductImages();
+        const imageUrl = images[selectedImage] || product?.image;
+        
+        // Format message with product details
+        const message = `Hi! 👋
+I'm interested in ordering:
+
+📦 ${product?.title}
+💰 Price: ₹${priceInRupees}
+🖼️ Image: ${imageUrl}
+
+Please confirm availability and provide delivery details.
+
+Thank you!`;
+        
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
@@ -128,13 +153,15 @@ const Product = () => {
                     <span className='product-category'>{product.category}</span>
                     <p>{product.content}</p>
                     <div className="product-prices d-flex pb-2">
-                        {product.oldPrice ? (
+                        {product.oldPrice && product.price ? (
                             <>
-                                <del className='product-price pe-2'>£{product.oldPrice}.00</del>
-                                <span className='product-price'>£{product.price}.00</span>
+                                <span className='old-price pe-2'>₹{Math.round(product.oldPrice * 100)}</span>
+                                <span className='product-price'>₹{Math.round(product.price * 100)}</span>
                             </>
+                        ) : product.price ? (
+                            <span className='product-price'>₹{Math.round(product.price * 100)}</span>
                         ) : (
-                            <span className='product-price'>£{product.price}.00</span>
+                            <span className='product-price'>Price not available</span>
                         )}
                     </div>
                     <button className='general-button' onClick={handlePlaceOrder}>Place Order</button>

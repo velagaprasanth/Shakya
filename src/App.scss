@@ -12,6 +12,17 @@ body {
   font-family: $main-font !important;
 }
 
+/* Ensure SVG icons display properly */
+svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button svg {
+  pointer-events: none;
+}
+
 .page-container {
   padding: 0 40px;
   max-width: 1200px;

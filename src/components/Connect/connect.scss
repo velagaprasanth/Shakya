@@ -18,28 +18,36 @@
 
     .connections {
         @include flexCenter;
-        gap: 8px;
+        gap: 12px;
         flex-wrap: wrap;
 
         .connect-button {
-            padding: 13px;
+            padding: 15px;
             background-color: #78909C;
             color: white;
             border: 0;
             outline: 0;
-            flex-wrap: wrap;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
 
             @media(max-width: 767px) {
-                padding: 10px;
+                padding: 12px;
             }
 
             svg {
-                width: 20px;
-                height: 20px;
+                width: 24px;
+                height: 24px;
+                fill: white;
+                stroke: white;
+                color: white;
             }
 
             &:hover {
                 background-color: #607d8b;
+                transform: scale(1.1);
             }
         }
     }
