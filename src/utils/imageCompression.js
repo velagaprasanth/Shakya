@@ -4,7 +4,6 @@
  */
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1 MB hard limit
-const TARGET_SIZE = 300 * 1024; // 300 KB target
 const TARGET_QUALITY = 0.75; // 75% quality
 
 /**
