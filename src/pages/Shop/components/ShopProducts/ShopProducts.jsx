@@ -20,7 +20,7 @@ const ShopProducts = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [selectedCategory, sortValue, products]);
+    }, [selectedCategory, sortValue, products, applyFilters]);
 
     const fetchProducts = async () => {
         try {

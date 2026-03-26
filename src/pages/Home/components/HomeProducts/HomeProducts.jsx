@@ -17,7 +17,7 @@ const HomeProducts = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [selectedCategory, products]);
+    }, [selectedCategory, products, applyFilters]);
 
     const fetchProducts = async () => {
         try {
