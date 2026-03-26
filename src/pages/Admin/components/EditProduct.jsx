@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
 
 /**
@@ -18,9 +18,28 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
         price: product.price,
         image: product.image || ''
     });
+    const [categories, setCategories] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(product.image);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const { data, error } = await supabaseAdmin
+                .from('categories')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+            setCategories(data || []);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -114,10 +133,11 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
 
                     <div className="form-group">
                         <label>Category *</label>
-                        <select name="category" value={formData.category} onChange={handleChange}>
-                            <option>Chair</option>
-                            <option>Sofa</option>
-                            <option>Table</option>
+                        <select name="category" value={formData.category} onChange={handleChange} required>
+                            <option value="">-- Select Category --</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                            ))}
                         </select>
                     </div>
 

@@ -69,44 +69,33 @@ const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories
             {filteredProducts.length === 0 ? (
                 <p className="no-products">No products match your search or filter.</p>
             ) : (
-                <div className="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th className="category-th">Category</th>
-                                <th className="price-th">Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredProducts.map(product => (
-                                <tr key={product.id}>
-                                    <td className="img-cell">
-                                        <img src={product.image} alt={product.title} />
-                                    </td>
-                                    <td className="title-cell">{product.title}</td>
-                                    <td className="category-cell">{product.category}</td>
-                                    <td className="price-cell">£{product.price}</td>
-                                    <td className="actions">
-                                        <button 
-                                            className="btn-edit"
-                                            onClick={() => setEditingId(editingId === product.id ? null : product.id)}
-                                        >
-                                            {editingId === product.id ? '✕' : '✎ Edit'}
-                                        </button>
-                                        <button 
-                                            className="btn-delete"
-                                            onClick={() => handleDelete(product.id)}
-                                        >
-                                            🗑 Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="products-grid">
+                    {filteredProducts.map(product => (
+                        <div key={product.id} className="product-card">
+                            <div className="product-image">
+                                <img src={product.image} alt={product.title} />
+                            </div>
+                            <div className="product-info">
+                                <h3 className="product-title">{product.title}</h3>
+                                <p className="product-category">{product.category}</p>
+                                <p className="product-price">₹{Math.round(product.price * 100)}</p>
+                            </div>
+                            <div className="product-actions">
+                                <button 
+                                    className="btn-edit"
+                                    onClick={() => setEditingId(editingId === product.id ? null : product.id)}
+                                >
+                                    {editingId === product.id ? '✕' : '✎ Edit'}
+                                </button>
+                                <button 
+                                    className="btn-delete"
+                                    onClick={() => handleDelete(product.id)}
+                                >
+                                    🗑 Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 

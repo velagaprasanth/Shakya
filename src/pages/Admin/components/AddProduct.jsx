@@ -1,18 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
 import { compressImage, formatFileSize, validateFileSize } from '../../../utils/imageCompression';
 
 const AddProduct = ({ onProductAdded }) => {
     const [formData, setFormData] = useState({
         title: '',
-        category: 'Chair',
+        category: '',
         content: '',
         price: ''
     });
+    const [categories, setCategories] = useState([]);
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [imageStats, setImageStats] = useState([]); // Track compression stats
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const { data, error } = await supabaseAdmin
+                .from('categories')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+            setCategories(data || []);
+            
+            // Set first category as default if available
+            if (data && data.length > 0) {
+                setFormData(prev => ({
+                    ...prev,
+                    category: data[0].name
+                }));
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -144,7 +171,7 @@ const AddProduct = ({ onProductAdded }) => {
             alert('Product added successfully!');
             setFormData({
                 title: '',
-                category: 'Chair',
+                category: categories.length > 0 ? categories[0].name : '',
                 content: '',
                 price: ''
             });
@@ -178,10 +205,11 @@ const AddProduct = ({ onProductAdded }) => {
 
                 <div className="form-group">
                     <label>Category *</label>
-                    <select name="category" value={formData.category} onChange={handleChange}>
-                        <option value="Chair">Chair</option>
-                        <option value="Sofa">Sofa</option>
-                        <option value="Table">Table</option>
+                    <select name="category" value={formData.category} onChange={handleChange} required>
+                        <option value="">-- Select Category --</option>
+                        {categories.map(cat => (
+                            <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))}
                     </select>
                 </div>
 
