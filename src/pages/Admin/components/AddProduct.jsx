@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
+import { compressImage, formatFileSize, validateFileSize } from '../../../utils/imageCompression';
 
 const AddProduct = ({ onProductAdded }) => {
     const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const AddProduct = ({ onProductAdded }) => {
     });
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [imageStats, setImageStats] = useState([]); // Track compression stats
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -20,7 +22,7 @@ const AddProduct = ({ onProductAdded }) => {
         }));
     };
 
-    const handleImageSelect = (e) => {
+    const handleImageSelect = async (e) => {
         const files = Array.from(e.target.files);
         const maxImages = 4;
 
@@ -29,19 +31,49 @@ const AddProduct = ({ onProductAdded }) => {
             return;
         }
 
-        const newFiles = [...imageFiles, ...files];
-        setImageFiles(newFiles);
+        try {
+            const compressedImages = [];
+            const newStats = [...imageStats];
 
-        // Create previews
-        const previews = newFiles.map(file => URL.createObjectURL(file));
-        setImagePreviews(previews);
+            for (const file of files) {
+                // Validate file size
+                const validation = validateFileSize(file);
+                if (!validation.valid) {
+                    alert(validation.error);
+                    continue;
+                }
+
+                // Compress image
+                const compressed = await compressImage(file);
+                compressedImages.push(compressed.file);
+                newStats.push({
+                    name: file.name,
+                    original: compressed.originalSize,
+                    compressed: compressed.compressedSize,
+                    compression: compressed.compression
+                });
+            }
+
+            const newFiles = [...imageFiles, ...compressedImages];
+            setImageFiles(newFiles);
+            setImageStats(newStats);
+
+            // Create previews
+            const previews = newFiles.map(file => URL.createObjectURL(file));
+            setImagePreviews(previews);
+        } catch (error) {
+            console.error('Error processing images:', error);
+            alert('Error processing images: ' + error.message);
+        }
     };
 
     const removeImage = (index) => {
         const newFiles = imageFiles.filter((_, i) => i !== index);
         const newPreviews = imagePreviews.filter((_, i) => i !== index);
+        const newStats = imageStats.filter((_, i) => i !== index);
         setImageFiles(newFiles);
         setImagePreviews(newPreviews);
+        setImageStats(newStats);
     };
 
     const uploadImages = async () => {
@@ -118,6 +150,7 @@ const AddProduct = ({ onProductAdded }) => {
             });
             setImageFiles([]);
             setImagePreviews([]);
+            setImageStats([]);
             onProductAdded();
         } catch (error) {
             console.error('Error adding product:', error.message);
@@ -194,6 +227,17 @@ const AddProduct = ({ onProductAdded }) => {
                             {imagePreviews.map((preview, index) => (
                                 <div key={index} className="preview-item">
                                     <img src={preview} alt={`Preview ${index}`} />
+                                    <div className="preview-info">
+                                        {imageStats[index] && (
+                                            <small className="file-size-info">
+                                                <div>Compressed</div>
+                                                <div>{formatFileSize(imageStats[index].compressed)}</div>
+                                                {imageStats[index].compression > 0 && (
+                                                    <div style={{ color: '#4caf50' }}>↓ {imageStats[index].compression}%</div>
+                                                )}
+                                            </small>
+                                        )}
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={() => removeImage(index)}
