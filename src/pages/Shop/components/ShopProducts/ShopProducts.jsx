@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleSort } from '../../../../store/features/filterSlice';
@@ -49,7 +49,7 @@ const ShopProducts = () => {
         dispatch(handleSort(value));
     };
 
-    const applyFilters = () => {
+    const applyFilters = useCallback(() => {
         let filtered = [...products];
 
         // Apply category filter
@@ -65,7 +65,7 @@ const ShopProducts = () => {
         }
 
         setFilteredProducts(filtered);
-    };
+    }, [products, selectedCategory, sortValue]);
 
     useEffect(() => {
         fetchProducts();
@@ -73,7 +73,7 @@ const ShopProducts = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [selectedCategory, sortValue, products]);
+    }, [applyFilters]);
 
     if (loading) {
         return <div className="shop-products"><p>Loading products...</p></div>;

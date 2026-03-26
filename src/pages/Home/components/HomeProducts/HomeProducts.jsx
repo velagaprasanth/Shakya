@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { supabase } from '../../../../services/supabaseClient';
 import { useSelector } from 'react-redux';
@@ -40,7 +40,7 @@ const HomeProducts = () => {
         }
     };
 
-    const applyFilters = () => {
+    const applyFilters = useCallback(() => {
         let filtered = [...products];
 
         // Apply category filter
@@ -52,7 +52,7 @@ const HomeProducts = () => {
         filtered = filtered.slice(0, 4);
 
         setFilteredProducts(filtered);
-    };
+    }, [products, selectedCategory]);
 
     useEffect(() => {
         fetchProducts();
@@ -60,7 +60,7 @@ const HomeProducts = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [selectedCategory, products]);
+    }, [applyFilters]);
 
     return (
         <div className="home-products page-container">
