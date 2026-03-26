@@ -163,7 +163,7 @@ const AdminDashboard = () => {
                     <div className="section-header mb-4">
                         <h2>Product Management</h2>
                         <button 
-                            className="btn-add-product"
+                            className="btn-primary"
                             onClick={() => setShowAddForm(!showAddForm)}
                         >
                             {showAddForm ? '✕ Cancel' : '+ Add New Product'}
