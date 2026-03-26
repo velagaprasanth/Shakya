@@ -239,9 +239,11 @@ const CategoriesList = ({ onCategoriesChanged }) => {
                 <div className="categories-grid">
                     {categories.map(cat => (
                         <div key={cat.id} className="category-card">
-                            {cat.cover_image && (
-                                <img src={cat.cover_image} alt={cat.name} className="category-cover" />
-                            )}
+                            <div className="category-image">
+                                {cat.cover_image && (
+                                    <img src={cat.cover_image} alt={cat.name} />
+                                )}
+                            </div>
                             <div className="category-info">
                                 <h3 className="category-name">{cat.name}</h3>
                                 <div className="category-actions">
