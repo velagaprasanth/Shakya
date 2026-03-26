@@ -14,14 +14,6 @@ const ShopProducts = () => {
     const dispatch = useDispatch();
     const selectedCategory = useSelector((state) => state.products.selectedCategory);
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        applyFilters();
-    }, [selectedCategory, sortValue, products, applyFilters]);
-
     const fetchProducts = async () => {
         try {
             setLoading(true);
@@ -74,6 +66,14 @@ const ShopProducts = () => {
 
         setFilteredProducts(filtered);
     };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        applyFilters();
+    }, [selectedCategory, sortValue, products]);
 
     if (loading) {
         return <div className="shop-products"><p>Loading products...</p></div>;

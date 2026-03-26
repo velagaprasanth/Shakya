@@ -11,14 +11,6 @@ const HomeProducts = () => {
     const [loading, setLoading] = useState(true);
     const selectedCategory = useSelector((state) => state.products.selectedCategory);
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        applyFilters();
-    }, [selectedCategory, products, applyFilters]);
-
     const fetchProducts = async () => {
         try {
             setLoading(true);
@@ -61,6 +53,14 @@ const HomeProducts = () => {
 
         setFilteredProducts(filtered);
     };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        applyFilters();
+    }, [selectedCategory, products]);
 
     return (
         <div className="home-products page-container">
