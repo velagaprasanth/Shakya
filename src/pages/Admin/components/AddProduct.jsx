@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
-import { compressImage, formatFileSize, validateFileSize } from '../../../utils/imageCompression';
+import { compressImage, formatFileSize } from '../../../utils/imageCompression';
 
 const AddProduct = ({ onProductAdded }) => {
     const [formData, setFormData] = useState({
