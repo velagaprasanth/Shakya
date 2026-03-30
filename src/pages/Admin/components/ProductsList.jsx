@@ -11,13 +11,36 @@ const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories
         if (!window.confirm('Are you sure you want to delete this product?')) return;
 
         try {
-            const { error } = await supabase
+            // Get product to retrieve image URLs
+            const { data: product, error: fetchError } = await supabase
+                .from('products')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            // Delete images from storage
+            if (product.images && product.images.length > 0) {
+                for (const imageUrl of product.images) {
+                    // Extract file path from public URL
+                    const urlParts = imageUrl.split('/');
+                    const fileName = urlParts[urlParts.length - 1];
+                    
+                    await supabase.storage
+                        .from('product-images')
+                        .remove([`products/${fileName}`]);
+                }
+            }
+
+            // Delete product from database
+            const { error: deleteError } = await supabase
                 .from('products')
                 .delete()
                 .eq('id', id);
 
-            if (error) throw error;
-            alert('Product deleted successfully!');
+            if (deleteError) throw deleteError;
+            alert('Product and all images deleted successfully!');
             onProductDeleted();
         } catch (error) {
             console.error('Error deleting product:', error.message);

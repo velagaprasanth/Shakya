@@ -51,7 +51,7 @@ const AddProduct = ({ onProductAdded }) => {
 
     const handleImageSelect = async (e) => {
         const files = Array.from(e.target.files);
-        const maxImages = 4;
+        const maxImages = 3;
 
         if (files.length + imageFiles.length > maxImages) {
             alert(`You can only upload up to ${maxImages} images`);
@@ -63,15 +63,14 @@ const AddProduct = ({ onProductAdded }) => {
             const newStats = [...imageStats];
 
             for (const file of files) {
-                // Validate file size
-                const validation = validateFileSize(file);
-                if (!validation.valid) {
-                    alert(validation.error);
-                    continue;
+                // Determine quality based on file size
+                let quality = 0.75; // Default quality
+                if (file.size > 2 * 1024 * 1024) { // > 2MB
+                    quality = 0.5; // Aggressive compression
                 }
 
                 // Compress image
-                const compressed = await compressImage(file);
+                const compressed = await compressImage(file, quality);
                 compressedImages.push(compressed.file);
                 newStats.push({
                     name: file.name,
@@ -112,14 +111,14 @@ const AddProduct = ({ onProductAdded }) => {
             const filePath = `products/${fileName}`;
 
             try {
-                const { error: uploadError } = await supabaseAdmin.storage
+                const { error: uploadError } = await supabase.storage
                     .from('product-images')
                     .upload(filePath, file);
 
                 if (uploadError) throw uploadError;
 
                 // Get public URL
-                const { data } = supabaseAdmin.storage
+                const { data } = supabase.storage
                     .from('product-images')
                     .getPublicUrl(filePath);
 

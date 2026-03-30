@@ -1,5 +1,150 @@
 ﻿// Admin Dashboard Mobile-First Responsive Styles
 
+// ========== ADMIN LOGIN PAGE ==========
+.admin-login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    .login-container {
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+
+        @media (max-width: 480px) {
+            padding: 30px 20px;
+            border-radius: 6px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+
+            @media (max-width: 480px) {
+                font-size: 1.5rem;
+            }
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .error-message {
+                background-color: #fee;
+                border: 1px solid #fcc;
+                color: #c33;
+                padding: 12px 15px;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                text-align: center;
+                font-weight: 500;
+
+                @media (max-width: 480px) {
+                    padding: 10px 12px;
+                    font-size: 0.85rem;
+                }
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                label {
+                    color: #333;
+                    font-weight: 600;
+                    font-size: 0.95rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+
+                    @media (max-width: 480px) {
+                        font-size: 0.9rem;
+                    }
+                }
+
+                input {
+                    padding: 12px 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                    font-family: inherit;
+
+                    @media (max-width: 480px) {
+                        padding: 10px 12px;
+                        font-size: 0.95rem;
+                    }
+
+                    &:focus {
+                        outline: none;
+                        border-color: #667eea;
+                        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                    }
+
+                    &::placeholder {
+                        color: #bbb;
+                    }
+                }
+            }
+
+            .btn-login {
+                padding: 12px 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-top: 10px;
+
+                @media (max-width: 480px) {
+                    padding: 11px 16px;
+                    font-size: 0.95rem;
+                }
+
+                &:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+                }
+
+                &:active:not(:disabled) {
+                    transform: translateY(0);
+                }
+
+                &:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
+
+// ========== ADMIN DASHBOARD ==========
 .admin-dashboard {
     min-height: 100vh;
     padding: 30px 0;

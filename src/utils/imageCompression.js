@@ -3,8 +3,7 @@
  * Compresses images to optimal size for web storage
  */
 
-const MAX_FILE_SIZE = 1024 * 1024; // 1 MB hard limit
-const TARGET_QUALITY = 0.75; // 75% quality
+const TARGET_QUALITY = 0.75; // 75% quality for normal files
 
 /**
  * Compress a single image file
@@ -48,32 +47,17 @@ export const compressImage = async (file, quality = TARGET_QUALITY) => {
                 // Draw image
                 ctx.drawImage(img, 0, 0);
                 
-                // Convert to blob with reduced quality
+                // Convert to blob with target quality
                 canvas.toBlob((blob) => {
-                    // If still too large, reduce quality further
-                    if (blob.size > MAX_FILE_SIZE) {
-                        canvas.toBlob((blob) => {
-                            const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
-                            const compression = Math.round((1 - blob.size / originalSize) * 100);
-                            
-                            resolve({
-                                file: compressedFile,
-                                originalSize,
-                                compressedSize: blob.size,
-                                compression
-                            });
-                        }, 'image/jpeg', Math.max(0.5, quality - 0.15)); // Further reduce quality
-                    } else {
-                        const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
-                        const compression = Math.round((1 - blob.size / originalSize) * 100);
-                        
-                        resolve({
-                            file: compressedFile,
-                            originalSize,
-                            compressedSize: blob.size,
-                            compression
-                        });
-                    }
+                    const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+                    const compression = Math.round((1 - blob.size / originalSize) * 100);
+                    
+                    resolve({
+                        file: compressedFile,
+                        originalSize,
+                        compressedSize: blob.size,
+                        compression
+                    });
                 }, 'image/jpeg', quality);
             };
             
@@ -106,15 +90,15 @@ export const formatFileSize = (bytes) => {
 };
 
 /**
- * Validate file size
+ * Validate file type
  * @param {File} file - File to validate
  * @returns {object} {valid: boolean, error?: string}
  */
 export const validateFileSize = (file) => {
-    if (file.size > MAX_FILE_SIZE) {
+    if (!file.type.startsWith('image/')) {
         return {
             valid: false,
-            error: `File size (${formatFileSize(file.size)}) exceeds 1 MB limit`
+            error: 'File must be an image'
         };
     }
     return { valid: true };

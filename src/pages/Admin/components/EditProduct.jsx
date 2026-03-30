@@ -73,13 +73,13 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
             // Upload new image if file is selected
             if (imageFile) {
                 const fileName = `${Date.now()}_${imageFile.name}`;
-                const { error: uploadError } = await supabaseAdmin.storage
+                const { error: uploadError } = await supabase.storage
                     .from('product-images')
                     .upload(`products/${fileName}`, imageFile);
 
                 if (uploadError) throw uploadError;
 
-                const { data: publicUrl } = supabaseAdmin.storage
+                const { data: publicUrl } = supabase.storage
                     .from('product-images')
                     .getPublicUrl(`products/${fileName}`);
 

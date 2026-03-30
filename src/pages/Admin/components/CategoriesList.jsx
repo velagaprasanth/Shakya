@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabaseAdmin } from '../../../services/supabaseClient';
+import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
 
 const CategoriesList = ({ onCategoriesChanged }) => {
     const [categories, setCategories] = useState([]);
@@ -59,13 +59,13 @@ const CategoriesList = ({ onCategoriesChanged }) => {
             const fileName = `${Date.now()}_${imageFile.name}`;
             const filePath = `categories/${fileName}`;
 
-            const { error: uploadError } = await supabaseAdmin.storage
+            const { error: uploadError } = await supabase.storage
                 .from('product-images')
                 .upload(filePath, imageFile);
 
             if (uploadError) throw uploadError;
 
-            const { data } = supabaseAdmin.storage
+            const { data } = supabase.storage
                 .from('product-images')
                 .getPublicUrl(filePath);
 
