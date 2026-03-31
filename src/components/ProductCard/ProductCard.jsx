@@ -7,8 +7,8 @@ const ProductCard = (props) => {
     const { image, title, category, price, oldPrice, item } = props;
     
     // Ensure we have valid price data
-    const displayPrice = price ? Math.round(price * 100) : 'N/A';
-    const displayOldPrice = oldPrice ? Math.round(oldPrice * 100) : null;
+    const displayPrice = price ? price : 'N/A';
+    const displayOldPrice = oldPrice ? oldPrice : null;
     
     return (
         <div data-aos="fade-up" className="product-card pb-5 d-flex flex-column col-12 col-md-4 col-lg-3">

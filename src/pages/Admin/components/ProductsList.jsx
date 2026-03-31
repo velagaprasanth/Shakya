@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../services/supabaseClient';
 import EditProduct from './EditProduct';
 
 const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories = [] }) => {
+    const navigate = useNavigate();
     const [editingId, setEditingId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -94,16 +96,16 @@ const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories
             ) : (
                 <div className="products-grid">
                     {filteredProducts.map(product => (
-                        <div key={product.id} className="product-card">
+                        <div key={product.id} className="product-card" onClick={() => navigate(`/shop/${product.id}`)} style={{ cursor: 'pointer' }}>
                             <div className="product-image">
                                 <img src={product.image} alt={product.title} />
                             </div>
                             <div className="product-info">
                                 <h3 className="product-title">{product.title}</h3>
                                 <p className="product-category">{product.category}</p>
-                                <p className="product-price">₹{Math.round(product.price * 100)}</p>
+                                <p className="product-price">₹{product.price}</p>
                             </div>
-                            <div className="product-actions">
+                            <div className="product-actions" onClick={(e) => e.stopPropagation()}>
                                 <button 
                                     className="btn-edit"
                                     onClick={() => setEditingId(editingId === product.id ? null : product.id)}
