@@ -90,8 +90,8 @@ const Product = () => {
     const handlePlaceOrder = () => {
         const phoneNumber = "919533556501"; // WhatsApp format: country code + number
         
-        // Convert price to rupees (assuming current price is in some other currency, multiply by 100 for conversion)
-        const priceInRupees = Math.round(product?.price * 100); // Adjust multiplier based on your currency conversion
+        // Price in rupees (no conversion needed)
+        const priceInRupees = product?.price;
         
         // Get the current displayed image
         const images = getProductImages();
@@ -155,11 +155,11 @@ Thank you!`;
                     <div className="product-prices d-flex pb-2">
                         {product.oldPrice && product.price ? (
                             <>
-                                <span className='old-price pe-2'>₹{Math.round(product.oldPrice * 100)}</span>
-                                <span className='product-price'>₹{Math.round(product.price * 100)}</span>
+                                <span className='old-price pe-2'>₹{product.oldPrice}</span>
+                                <span className='product-price'>₹{product.price}</span>
                             </>
                         ) : product.price ? (
-                            <span className='product-price'>₹{Math.round(product.price * 100)}</span>
+                            <span className='product-price'>₹{product.price}</span>
                         ) : (
                             <span className='product-price'>Price not available</span>
                         )}
