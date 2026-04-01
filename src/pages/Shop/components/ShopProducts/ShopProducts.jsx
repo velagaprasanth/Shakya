@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleSort } from '../../../../store/features/filterSlice';
-import { supabase } from '../../../../services/supabaseClient';
+import { supabaseAdmin } from '../../../../services/supabaseClient';
 import { getCache, setCache } from '../../../../utils/cache';
 import "./shopProducts.scss";
 
@@ -26,7 +26,7 @@ const ShopProducts = () => {
                 return;
             }
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('products')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -54,7 +54,9 @@ const ShopProducts = () => {
 
         // Apply category filter
         if (selectedCategory) {
-            filtered = filtered.filter(p => p.category === selectedCategory);
+            filtered = filtered.filter(p => 
+                p.category && p.category.toLowerCase() === selectedCategory.toLowerCase()
+            );
         }
 
         // Apply sorting

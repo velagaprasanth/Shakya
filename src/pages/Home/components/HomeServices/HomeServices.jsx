@@ -4,7 +4,7 @@ import HomeServicesItem from './HomeServicesItem'
 
 const HomeServices = () => {
     return (
-        <div className="home-services page-container py-4">
+        <div className="home-services page-container py-2">
             <div className="row justify-content-center" >
                 <HomeServicesItem
                     image='https://websitedemos.net/furniture-store-04/wp-content/uploads/sites/155/elementor/thumbs/certificate-icon-p3wgqj83iftdfzntt865n2pg6gyhr6ui9h6ri1cwns.png'

@@ -11,8 +11,8 @@ const ProductCard = (props) => {
     const displayOldPrice = oldPrice ? oldPrice : null;
     
     return (
-        <div data-aos="fade-up" className="product-card pb-5 d-flex flex-column col-12 col-md-4 col-lg-3">
-            <div className="product-image mb-1">
+        <div className="product-card mb-5 d-flex flex-column col-12 col-md-4 col-lg-3 px-3">
+            <div className="product-image mb-3">
                 <Link to={`/shop/${item.id}`}><img src={image} alt="product" /></Link>
             </div>
             <div className="product-info px-3 d-flex flex-column">

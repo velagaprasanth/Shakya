@@ -6,7 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { IoCloseSharp } from "react-icons/io5";
 import { useDispatch } from 'react-redux';
 import { handleCategory } from '../../store/features/filterSlice';
-import { supabase } from '../../services/supabaseClient';
+import { supabaseAdmin } from '../../services/supabaseClient';
 import { getCache, setCache } from '../../utils/cache';
 
 const Header = () => {
@@ -29,7 +29,7 @@ const Header = () => {
                 return;
             }
 
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('categories')
                 .select('*')
                 .order('created_at', { ascending: true });

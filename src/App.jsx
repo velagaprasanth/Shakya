@@ -1,5 +1,5 @@
 import './App.scss';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
@@ -11,8 +11,12 @@ import Product from './pages/Product/Product';
 import Connect from './components/Connect/Connect';
 import Contact from './components/Contact/Contact';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
 
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
   return (
     <>
       <Header />
@@ -26,9 +30,14 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Connect />
-      <Contact />
-      <Footer />
+      <FloatingWhatsApp />
+      {!isHomePage && (
+        <>
+          <Connect />
+          <Contact />
+          <Footer />
+        </>
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
-import { supabase } from '../../../../services/supabaseClient';
+import { supabaseAdmin } from '../../../../services/supabaseClient';
 import { useSelector } from 'react-redux';
 import { getCache, setCache } from '../../../../utils/cache';
 import "./homeProducts.scss";
@@ -23,7 +23,7 @@ const HomeProducts = () => {
                 return;
             }
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('products')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -76,17 +76,20 @@ const HomeProducts = () => {
                 <p className="text-center">No products available</p>
             ) : (
                 <div className="row">
-                    {filteredProducts.map((item) => (
-                        <ProductCard
-                            key={item.id}
-                            item={item}
-                            image={item.image}
-                            title={item.title}
-                            category={item.category}
-                            price={item.price}
-                            oldPrice={item.oldPrice}
-                        />
-                    ))}
+                    {filteredProducts.map((item) => {
+                        const displayImage = item.image ? item.image : (item.images && item.images.length > 0 ? item.images[0] : '');
+                        return (
+                            <ProductCard
+                                key={item.id}
+                                item={item}
+                                image={displayImage}
+                                title={item.title}
+                                category={item.category}
+                                price={item.price}
+                                oldPrice={item.oldPrice}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </div>

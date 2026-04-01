@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { HiOutlineArrowNarrowLeft } from 'react-icons/hi';
-import { supabase } from '../../services/supabaseClient';
+import { supabaseAdmin } from '../../services/supabaseClient';
 import { updateMetaTags, resetMetaTags } from '../../utils/updateMetaTags';
 import { getCache, setCache } from '../../utils/cache';
 import "./Product.scss";
@@ -32,7 +32,7 @@ const Product = () => {
                 return;
             }
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('products')
                 .select('*')
                 .eq('id', id)
