@@ -66,8 +66,6 @@ const CarouselList = () => {
             return;
         }
 
-        const MAX_SLIDES = 5;
-
         try {
             setUploading(true);
 
