@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleSort, handleSubcategory } from '../../../../store/features/filterSlice';

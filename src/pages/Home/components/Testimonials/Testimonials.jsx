@@ -3,7 +3,7 @@ import TestimonialsItem from './TestimonialsItem';
 import { supabase } from '../../../../services/supabaseClient';
 import { useDispatch } from 'react-redux';
 import { handleCategory } from '../../../../store/features/filterSlice';
-import { getCache, setCache } from '../../../../utils/cache';
+import { setCache } from '../../../../utils/cache';
 
 const Testimonials = () => {
     const dispatch = useDispatch();

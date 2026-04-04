@@ -19,6 +19,7 @@ const SubcategoriesList = ({ onSubcategoriesChanged }) => {
     useEffect(() => {
         fetchCategories();
         fetchSubcategories();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchCategories = async () => {
