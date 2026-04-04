@@ -12,18 +12,10 @@ const HomeCollection = () => {
 
     const fetchCategories = async () => {
         try {
-            // Check cache first
-            const cachedData = getCache('home_categories');
-            if (cachedData) {
-                setCategories(cachedData);
-                return;
-            }
-
             const { data, error } = await supabaseAdmin
                 .from('categories')
                 .select('*')
-                .order('created_at', { ascending: true })
-                .limit(2); // Just show 2 categories like before
+                .order('created_at', { ascending: true });
 
             if (error) throw error;
 

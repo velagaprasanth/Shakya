@@ -12,13 +12,16 @@ const TestimonialsItem = (props) => {
     }
     
     return (
-        <div 
-            data-aos="fade-up" 
-            className="testimonial-item d-flex flex-column col-12 col-md-4 pb-4"
+        <div
+            className="testimonial-item d-flex flex-column pb-4"
             onClick={handleClick}
         >
             <div className="category-image-container">
-                <img src={image} alt={name} />
+                {image ? (
+                    <img src={image} alt={name} />
+                ) : (
+                    <span className="fallback-text">{name ? name[0] : ''}</span>
+                )}
             </div>
             <h4>{name}</h4>
         </div>

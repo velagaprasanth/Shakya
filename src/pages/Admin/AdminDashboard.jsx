@@ -4,6 +4,7 @@ import './admin.scss';
 import AddProduct from './components/AddProduct';
 import ProductsList from './components/ProductsList';
 import CategoriesList from './components/CategoriesList';
+import SubcategoriesList from './components/SubcategoriesList';
 import AdminLogin from './AdminLogin';
 
 /**
@@ -150,6 +151,12 @@ const AdminDashboard = () => {
                         Categories
                     </button>
                     <button 
+                        className={`tab-btn ${activeTab === 'subcategories' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('subcategories')}
+                    >
+                        Subcategories
+                    </button>
+                    <button 
                         className="tab-btn logout-btn"
                         onClick={handleLogout}
                     >
@@ -189,6 +196,10 @@ const AdminDashboard = () => {
 
             {activeTab === 'categories' && (
                 <CategoriesList onCategoriesChanged={() => {}} />
+            )}
+
+            {activeTab === 'subcategories' && (
+                <SubcategoriesList onSubcategoriesChanged={() => {}} />
             )}
         </div>
     );

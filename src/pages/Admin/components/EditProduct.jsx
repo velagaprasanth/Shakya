@@ -14,30 +14,35 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
     const [formData, setFormData] = useState({
         title: product.title,
         category: product.category,
+        subcategory: product.subcategory || '',
         content: product.content || '',
         price: product.price,
         image: product.image || ''
     });
     const [categories, setCategories] = useState([]);
+    const [allSubcategories, setAllSubcategories] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(product.image);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        fetchCategories();
+        fetchData();
     }, []);
 
-    const fetchCategories = async () => {
+    const fetchData = async () => {
         try {
-            const { data, error } = await supabaseAdmin
-                .from('categories')
-                .select('*')
-                .order('name', { ascending: true });
+            const [catRes, subcatRes] = await Promise.all([
+                supabaseAdmin.from('categories').select('*').order('name', { ascending: true }),
+                supabaseAdmin.from('subcategories').select('*').order('name', { ascending: true })
+            ]);
 
-            if (error) throw error;
-            setCategories(data || []);
+            if (catRes.error) throw catRes.error;
+            if (subcatRes.error) throw subcatRes.error;
+
+            setCategories(catRes.data || []);
+            setAllSubcategories(subcatRes.data || []);
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching data:', error);
         }
     };
 
@@ -91,6 +96,7 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
                 .update({
                     title: formData.title,
                     category: formData.category,
+                    subcategory: formData.subcategory || null,
                     content: formData.content,
                     price: parseFloat(formData.price),
                     image: imageUrl
@@ -133,10 +139,22 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
 
                     <div className="form-group">
                         <label>Category *</label>
-                        <select name="category" value={formData.category} onChange={handleChange} required>
+                        <select name="category" value={formData.category} onChange={(e) => {handleChange(e); setFormData(p => ({...p, subcategory: ''}));}} required>
                             <option value="">-- Select Category --</option>
                             {categories.map(cat => (
                                 <option key={cat.id} value={cat.name}>{cat.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Subcategory</label>
+                        <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange}>
+                            <option value="">-- No Subcategory --</option>
+                            {allSubcategories
+                                .filter(sub => sub.category_name === formData.category)
+                                .map(sub => (
+                                    <option key={sub.id} value={sub.name}>{sub.name}</option>
                             ))}
                         </select>
                     </div>

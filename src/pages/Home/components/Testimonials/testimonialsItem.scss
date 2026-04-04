@@ -1,4 +1,4 @@
-@import "../../../../vendors/mixins";
+﻿@import "../../../../vendors/mixins";
 @import "../../../../vendors/variables";
 
 
@@ -71,4 +71,11 @@
         word-wrap: break-word;
         max-width: 120px;
     }
+}
+
+.fallback-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #adb5bd;
+    text-transform: uppercase;
 }

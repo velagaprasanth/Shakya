@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase, supabaseAdmin } from '../../../services/supabaseClient';
 
-const CategoriesList = ({ onCategoriesChanged }) => {
+const SubcategoriesList = ({ onSubcategoriesChanged }) => {
+    const [subcategories, setSubcategories] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
+        category_name: '',
         coverImage: ''
     });
     const [imageFile, setImageFile] = useState(null);
@@ -16,20 +18,39 @@ const CategoriesList = ({ onCategoriesChanged }) => {
 
     useEffect(() => {
         fetchCategories();
+        fetchSubcategories();
     }, []);
 
     const fetchCategories = async () => {
         try {
-            setLoading(true);
             const { data, error } = await supabaseAdmin
                 .from('categories')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+            setCategories(data || []);
+            
+            if (data && data.length > 0 && !formData.category_name) {
+                setFormData(prev => ({ ...prev, category_name: data[0].name }));
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    const fetchSubcategories = async () => {
+        try {
+            setLoading(true);
+            const { data, error } = await supabaseAdmin
+                .from('subcategories')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            setCategories(data || []);
+            setSubcategories(data || []);
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching subcategories:', error);
         } finally {
             setLoading(false);
         }
@@ -54,10 +75,9 @@ const CategoriesList = ({ onCategoriesChanged }) => {
 
     const uploadImage = async () => {
         if (!imageFile) return null;
-
         try {
             const fileName = `${Date.now()}_${imageFile.name}`;
-            const filePath = `categories/${fileName}`;
+            const filePath = `subcategories/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('product-images')
@@ -80,53 +100,52 @@ const CategoriesList = ({ onCategoriesChanged }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!imageFile && !formData.coverImage) {
-            alert('Please upload or select an image');
+        if (!formData.category_name) {
+            alert('Please select a main category');
             return;
         }
-        
+
         try {
             setUploading(true);
             let imageUrl = formData.coverImage;
 
-            // Upload image if a new file was selected
             if (imageFile) {
                 imageUrl = await uploadImage();
-                if (!imageUrl) return;
+                if (imageFile && !imageUrl) return; // if it failed
             }
 
             if (editingId) {
-                // Update
                 const { error } = await supabaseAdmin
-                    .from('categories')
+                    .from('subcategories')
                     .update({
                         name: formData.name,
+                        category_name: formData.category_name,
                         cover_image: imageUrl
                     })
                     .eq('id', editingId);
 
                 if (error) throw error;
-                alert('Category updated successfully!');
+                alert('Subcategory updated successfully!');
                 setEditingId(null);
             } else {
-                // Insert
                 const { error } = await supabaseAdmin
-                    .from('categories')
+                    .from('subcategories')
                     .insert([{
                         name: formData.name,
+                        category_name: formData.category_name,
                         cover_image: imageUrl
                     }]);
 
                 if (error) throw error;
-                alert('Category added successfully!');
+                alert('Subcategory added successfully!');
             }
 
-            setFormData({ name: '', coverImage: '' });
+            setFormData(prev => ({ name: '', category_name: prev.category_name, coverImage: '' }));
             setImageFile(null);
             setImagePreview(null);
             setShowAddForm(false);
-            fetchCategories();
-            if (onCategoriesChanged) onCategoriesChanged();
+            fetchSubcategories();
+            if (onSubcategoriesChanged) onSubcategoriesChanged();
         } catch (error) {
             console.error('Error:', error);
             alert('Error: ' + error.message);
@@ -135,24 +154,24 @@ const CategoriesList = ({ onCategoriesChanged }) => {
         }
     };
 
-    const handleEdit = (category) => {
+    const handleEdit = (subcategory) => {
         setFormData({
-            name: category.name,
-            coverImage: category.cover_image || ''
+            name: subcategory.name,
+            category_name: subcategory.category_name,
+            coverImage: subcategory.cover_image || ''
         });
         setImageFile(null);
-        setImagePreview(category.cover_image || null);
-        setEditingId(category.id);
+        setImagePreview(subcategory.cover_image || null);
+        setEditingId(subcategory.id);
         setShowAddForm(true);
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Delete this category?')) return;
-
+        if (!window.confirm('Delete this subcategory?')) return;
         try {
-            // Get category to retrieve image URL
-            const { data: category, error: fetchError } = await supabaseAdmin
-                .from('categories')
+            // Get subcategory to retrieve image URL
+            const { data: subcategory, error: fetchError } = await supabaseAdmin
+                .from('subcategories')
                 .select('*')
                 .eq('id', id)
                 .single();
@@ -160,24 +179,24 @@ const CategoriesList = ({ onCategoriesChanged }) => {
             if (fetchError) throw fetchError;
 
             // Delete image from storage
-            if (category.cover_image) {
-                const urlParts = category.cover_image.split('/');
+            if (subcategory.cover_image) {
+                const urlParts = subcategory.cover_image.split('/');
                 const fileName = urlParts[urlParts.length - 1];
 
                 await supabase.storage
                     .from('product-images')
-                    .remove([`categories/${fileName}`]);
+                    .remove([`subcategories/${fileName}`]);
             }
 
             const { error } = await supabaseAdmin
-                .from('categories')
+                .from('subcategories')
                 .delete()
                 .eq('id', id);
 
             if (error) throw error;
-            alert('Category and image deleted successfully!');
-            fetchCategories();
-            if (onCategoriesChanged) onCategoriesChanged();
+            alert('Subcategory and image deleted successfully!');
+            fetchSubcategories();
+            if (onSubcategoriesChanged) onSubcategoriesChanged();
         } catch (error) {
             console.error('Error:', error);
             alert('Error: ' + error.message);
@@ -187,7 +206,7 @@ const CategoriesList = ({ onCategoriesChanged }) => {
     const handleCancel = () => {
         setShowAddForm(false);
         setEditingId(null);
-        setFormData({ name: '', coverImage: '' });
+        setFormData(prev => ({ name: '', category_name: prev.category_name, coverImage: '' }));
         setImageFile(null);
         setImagePreview(null);
     };
@@ -195,13 +214,13 @@ const CategoriesList = ({ onCategoriesChanged }) => {
     return (
         <div className="categories-management">
             <div className="section-header mb-4">
-                <h2>Categories Management</h2>
+                <h2>Subcategories Management</h2>
                 {!showAddForm && (
                     <button 
                         className="btn-primary"
                         onClick={() => setShowAddForm(true)}
                     >
-                        + Add Category
+                        + Add Subcategory
                     </button>
                 )}
             </div>
@@ -209,26 +228,40 @@ const CategoriesList = ({ onCategoriesChanged }) => {
             {showAddForm && (
                 <div className="add-category-form mb-4">
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Category Name *</label>
+                        <div className="form-group mb-3">
+                            <label>Parent Category *</label>
+                            <select 
+                                name="category_name" 
+                                value={formData.category_name} 
+                                onChange={handleChange} 
+                                required
+                            >
+                                <option value="">-- Select Parent Category --</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="form-group mb-3">
+                            <label>Subcategory Name *</label>
                             <input
                                 type="text"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                placeholder="e.g., Chair, Sofa, Table"
+                                placeholder="e.g., Office Chairs, Recliners"
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label>Cover Image (Up to 2MB) *</label>
+                        <div className="form-group mb-3">
+                            <label>Cover Image (Optional)</label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageSelect}
                             />
-                            <small>Select an image file to upload</small>
                         </div>
 
                         {imagePreview && (
@@ -238,9 +271,9 @@ const CategoriesList = ({ onCategoriesChanged }) => {
                             </div>
                         )}
 
-                        <div className="form-actions">
+                        <div className="form-actions mt-4">
                             <button type="submit" className="btn-primary" disabled={uploading}>
-                                {uploading ? 'Uploading...' : (editingId ? 'Update Category' : 'Add Category')}
+                                {uploading ? 'Uploading...' : (editingId ? 'Update Subcategory' : 'Add Subcategory')}
                             </button>
                             <button type="button" onClick={handleCancel} className="btn-cancel" disabled={uploading}>
                                 Cancel
@@ -251,33 +284,26 @@ const CategoriesList = ({ onCategoriesChanged }) => {
             )}
 
             {loading ? (
-                <p>Loading categories...</p>
-            ) : categories.length === 0 ? (
-                <p>No categories yet</p>
+                <p>Loading subcategories...</p>
+            ) : subcategories.length === 0 ? (
+                <p>No subcategories yet</p>
             ) : (
                 <div className="categories-grid">
-                    {categories.map(cat => (
-                        <div key={cat.id} className="category-card">
+                    {subcategories.map(sub => (
+                        <div key={sub.id} className="category-card">
                             <div className="category-image">
-                                {cat.cover_image && (
-                                    <img src={cat.cover_image} alt={cat.name} />
+                                {sub.cover_image ? (
+                                    <img src={sub.cover_image} alt={sub.name} />
+                                ) : (
+                                    <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eee', color: '#999' }}>No Image</div>
                                 )}
                             </div>
                             <div className="category-info">
-                                <h3 className="category-name">{cat.name}</h3>
+                                <h3 className="category-name">{sub.name}</h3>
+                                <p style={{ fontSize: '0.8em', color: '#777', margin: '4px 0' }}>Under: {sub.category_name}</p>
                                 <div className="category-actions">
-                                    <button 
-                                        className="btn-edit"
-                                        onClick={() => handleEdit(cat)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button 
-                                        className="btn-delete"
-                                        onClick={() => handleDelete(cat.id)}
-                                    >
-                                        Delete
-                                    </button>
+                                    <button className="btn-edit" onClick={() => handleEdit(sub)}>Edit</button>
+                                    <button className="btn-delete" onClick={() => handleDelete(sub.id)}>Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -288,4 +314,4 @@ const CategoriesList = ({ onCategoriesChanged }) => {
     );
 };
 
-export default CategoriesList;
+export default SubcategoriesList;

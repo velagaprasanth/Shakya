@@ -6,38 +6,43 @@ const AddProduct = ({ onProductAdded }) => {
     const [formData, setFormData] = useState({
         title: '',
         category: '',
+        subcategory: '',
         content: '',
         price: ''
     });
     const [categories, setCategories] = useState([]);
+    const [allSubcategories, setAllSubcategories] = useState([]);
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [imageStats, setImageStats] = useState([]); // Track compression stats
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        fetchCategories();
+        fetchData();
     }, []);
 
-    const fetchCategories = async () => {
+    const fetchData = async () => {
         try {
-            const { data, error } = await supabaseAdmin
-                .from('categories')
-                .select('*')
-                .order('name', { ascending: true });
+            const [catRes, subcatRes] = await Promise.all([
+                supabaseAdmin.from('categories').select('*').order('name', { ascending: true }),
+                supabaseAdmin.from('subcategories').select('*').order('name', { ascending: true })
+            ]);
 
-            if (error) throw error;
-            setCategories(data || []);
+            if (catRes.error) throw catRes.error;
+            if (subcatRes.error) throw subcatRes.error;
+
+            setCategories(catRes.data || []);
+            setAllSubcategories(subcatRes.data || []);
             
             // Set first category as default if available
-            if (data && data.length > 0) {
+            if (catRes.data && catRes.data.length > 0) {
                 setFormData(prev => ({
                     ...prev,
-                    category: data[0].name
+                    category: catRes.data[0].name
                 }));
             }
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching data:', error);
         }
     };
 
@@ -158,6 +163,7 @@ const AddProduct = ({ onProductAdded }) => {
                     {
                         title: formData.title,
                         category: formData.category,
+                        subcategory: formData.subcategory || null,
                         content: formData.content,
                         price: parseFloat(formData.price),
                         image: mainImage,
@@ -171,6 +177,7 @@ const AddProduct = ({ onProductAdded }) => {
             setFormData({
                 title: '',
                 category: categories.length > 0 ? categories[0].name : '',
+                subcategory: '',
                 content: '',
                 price: ''
             });
@@ -204,10 +211,22 @@ const AddProduct = ({ onProductAdded }) => {
 
                 <div className="form-group">
                     <label>Category *</label>
-                    <select name="category" value={formData.category} onChange={handleChange} required>
+                    <select name="category" value={formData.category} onChange={(e) => {handleChange(e); setFormData(p => ({...p, subcategory: ''}));}} required>
                         <option value="">-- Select Category --</option>
                         {categories.map(cat => (
                             <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>Subcategory</label>
+                    <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange}>
+                        <option value="">-- No Subcategory --</option>
+                        {allSubcategories
+                            .filter(sub => sub.category_name === formData.category)
+                            .map(sub => (
+                                <option key={sub.id} value={sub.name}>{sub.name}</option>
                         ))}
                     </select>
                 </div>

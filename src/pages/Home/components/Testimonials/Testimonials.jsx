@@ -17,22 +17,14 @@ const Testimonials = () => {
     const fetchCategories = async () => {
         try {
             setLoading(true);
-            
-            // Check cache first
-            const cachedData = getCache('categories');
-            if (cachedData) {
-                setCategories(cachedData);
-                setLoading(false);
-                return;
-            }
-            
+
             const { data, error } = await supabase
                 .from('categories')
                 .select('*')
                 .order('created_at', { ascending: true });
-            
+
             if (error) throw error;
-            
+
             // Cache for 30 minutes
             setCache('categories', data || [], 30);
             setCategories(data || []);

@@ -23,18 +23,13 @@ const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories
             if (fetchError) throw fetchError;
 
             // Delete images from storage
-            if (product.images && product.images.length > 0) {
-                for (const imageUrl of product.images) {
-                    // Extract file path from public URL
-                    const urlParts = imageUrl.split('/');
-                    const fileName = urlParts[urlParts.length - 1];
-                    
-                    await supabase.storage
-                        .from('product-images')
-                        .remove([`products/${fileName}`]);
-                }
-            }
+            if (product.image) {
+                const urlParts = product.image.split('/');
+                const fileName = urlParts[urlParts.length - 1];
 
+                await supabase.storage
+                    .from('product-images')
+                    .remove([`products/${fileName}`]);              }
             // Delete product from database
             const { error: deleteError } = await supabase
                 .from('products')
