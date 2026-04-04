@@ -6,9 +6,39 @@ import image3 from '../../../../assets/images/image3.png';
 import image4 from '../../../../assets/images/image4.png';
 import image5 from '../../../../assets/images/image5.png';
 
+import { supabase } from '../../../../services/supabaseClient';
+
 const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const slides = [image1, image2, image3, image4, image5];
+    const [slides, setSlides] = useState([image1, image2, image3, image4, image5]);
+
+    useEffect(() => {
+        const fetchCarouselImages = async () => {
+            try {
+                const { data, error } = await supabase.storage
+                    .from('product-images')
+                    .list('carousel', { limit: 10, sortBy: { column: 'name', order: 'asc' } });
+                
+                if (error) throw error;
+                
+                const files = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder' && f.name !== '.DS_Store');
+                
+                if (files.length > 0) {
+                    const imageUrls = files.map(file => {
+                        const { data: publicUrlData } = supabase.storage
+                            .from('product-images')
+                            .getPublicUrl(`carousel/${file.name}`);
+                        return publicUrlData.publicUrl;
+                    });
+                    setSlides(imageUrls);
+                }
+            } catch (error) {
+                console.error("Error fetching carousel images:", error);
+            }
+        };
+
+        fetchCarouselImages();
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {

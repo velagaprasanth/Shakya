@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { supabaseAdmin } from '../../../../services/supabaseClient';
-import { useSelector } from 'react-redux';
 import { getCache, setCache } from '../../../../utils/cache';
 import "./homeProducts.scss";
 
@@ -9,7 +8,6 @@ const HomeProducts = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const selectedCategory = useSelector((state) => state.products.selectedCategory);
 
     const fetchProducts = async () => {
         try {
@@ -43,16 +41,11 @@ const HomeProducts = () => {
     const applyFilters = useCallback(() => {
         let filtered = [...products];
 
-        // Apply category filter
-        if (selectedCategory) {
-            filtered = filtered.filter(p => p.category === selectedCategory);
-        }
-
         // Limit to 4 products for home page
         filtered = filtered.slice(0, 4);
 
         setFilteredProducts(filtered);
-    }, [products, selectedCategory]);
+    }, [products]);
 
     useEffect(() => {
         fetchProducts();
@@ -65,7 +58,7 @@ const HomeProducts = () => {
     return (
         <div className="home-products page-container">
             <h3 className='text-center part-title'>
-                {selectedCategory ? `${selectedCategory} Products` : 'Our Latest Products'}
+                Our Latest Products
             </h3>
             <div className="divider-part">
                 <div className="divider"></div>

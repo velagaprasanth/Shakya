@@ -5,6 +5,7 @@ import AddProduct from './components/AddProduct';
 import ProductsList from './components/ProductsList';
 import CategoriesList from './components/CategoriesList';
 import SubcategoriesList from './components/SubcategoriesList';
+import CarouselList from './components/CarouselList';
 import AdminLogin from './AdminLogin';
 
 /**
@@ -157,6 +158,12 @@ const AdminDashboard = () => {
                         Subcategories
                     </button>
                     <button 
+                        className={`tab-btn ${activeTab === 'carousel' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('carousel')}
+                    >
+                        Carousel
+                    </button>
+                    <button 
                         className="tab-btn logout-btn"
                         onClick={handleLogout}
                     >
@@ -200,6 +207,10 @@ const AdminDashboard = () => {
 
             {activeTab === 'subcategories' && (
                 <SubcategoriesList onSubcategoriesChanged={() => {}} />
+            )}
+
+            {activeTab === 'carousel' && (
+                <CarouselList />
             )}
         </div>
     );
