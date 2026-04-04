@@ -12,6 +12,7 @@ import Connect from './components/Connect/Connect';
 import Contact from './components/Contact/Contact';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
+import SubcategoryProducts from './pages/SubcategoryProducts/SubcategoryProducts';
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/shop/:id" element={<Product />} />
+          <Route path="/subcategory/:subcategoryName" element={<SubcategoryProducts />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />

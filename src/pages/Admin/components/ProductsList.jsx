@@ -98,7 +98,7 @@ const ProductsList = ({ products, onProductDeleted, onProductUpdated, categories
                             <div className="product-info">
                                 <h3 className="product-title">{product.title}</h3>
                                 <p className="product-category">{product.category}</p>
-                                <p className="product-price">₹{product.price}</p>
+                                <p className="product-price">{product.price}</p>
                             </div>
                             <div className="product-actions" onClick={(e) => e.stopPropagation()}>
                                 <button 

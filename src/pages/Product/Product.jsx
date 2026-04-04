@@ -102,7 +102,7 @@ const Product = () => {
 I'm interested in ordering:
 
 📦 ${product?.title}
-💰 Price: ₹${priceInRupees}
+💰 Price: ${priceInRupees}
 🖼️ Image: ${imageUrl}
 
 Please confirm availability and provide delivery details.
@@ -155,11 +155,11 @@ Thank you!`;
                     <div className="product-prices d-flex pb-2">
                         {product.oldPrice && product.price ? (
                             <>
-                                <span className='old-price pe-2'>₹{product.oldPrice}</span>
-                                <span className='product-price'>₹{product.price}</span>
+                                <span className='old-price pe-2'>{product.oldPrice}</span>
+                                <span className='product-price'>{product.price}</span>
                             </>
                         ) : product.price ? (
-                            <span className='product-price'>₹{product.price}</span>
+                            <span className='product-price'>{product.price}</span>
                         ) : (
                             <span className='product-price'>Price not available</span>
                         )}

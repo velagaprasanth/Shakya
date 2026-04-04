@@ -14,10 +14,16 @@ const CartPayment = () => {
         });
         return total;
     };
+    const parsePrice = (priceStr) => {
+        if (!priceStr) return 0;
+        const match = String(priceStr).match(/\d+(\.\d+)?/);
+        return match ? parseFloat(match[0]) : 0;
+    };
+
     const getTotalPrice = () => {
         let total = 0;
         cart.forEach((item) => {
-            total += Math.round(item.price) * item.quantity;
+            total += Math.round(parsePrice(item.price)) * item.quantity;
         });
         return total;
     };
@@ -35,19 +41,19 @@ const CartPayment = () => {
         
         let totalRupees = 0;
         cart.forEach((item, index) => {
-            const priceInRupees = Math.round(item.price * 100); // Adjust multiplier based on your currency conversion
-            const itemTotal = priceInRupees * item.quantity;
+            const parsedPrice = parsePrice(item.price);
+            const itemTotal = parsedPrice * item.quantity;
             totalRupees += itemTotal;
             
             cartDetails += `${index + 1}. ${item.title}\n`;
             cartDetails += `   Category: ${item.category}\n`;
-            cartDetails += `   Price: ₹${priceInRupees} × ${item.quantity} = ₹${itemTotal}\n`;
+            cartDetails += `   Price: ${item.price} × ${item.quantity} = ${itemTotal}\n`;
             cartDetails += `   Image: ${item.image}\n\n`;
         });
         
         cartDetails += `━━━━━━━━━━━━━━━━━━━━━\n`;
         cartDetails += `Total Items: ${getTotalQuantity()}\n`;
-        cartDetails += `Total Price: ₹${totalRupees}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        cartDetails += `Total Price: ${totalRupees}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
         cartDetails += `Please confirm availability and provide delivery details.\n\nThank you!`;
         
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(cartDetails)}`;
@@ -104,7 +110,7 @@ const CartPayment = () => {
 
                                             <div className="d-flex justify-content-between mb-5">
                                                 <h5 className="text-uppercase">Total price</h5>
-                                                <h5>₹ {getTotalPrice()}.00</h5>
+                                                <h5>{getTotalPrice()}.00</h5>
                                             </div>
                                             <button type="button" className="general-button" onClick={handleCheckout}>Proceed To Checkout</button>
                                         </div>

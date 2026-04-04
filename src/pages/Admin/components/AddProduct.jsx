@@ -159,7 +159,7 @@ const AddProduct = ({ onProductAdded }) => {
                         category: formData.category,
                         subcategory: formData.subcategory || null,
                         content: formData.content,
-                        price: parseFloat(formData.price),
+                        price: formData.price,
                         image: mainImage,
                         images: imageUrls
                     }
@@ -244,14 +244,14 @@ const AddProduct = ({ onProductAdded }) => {
                 </div>
 
                 <div className="form-group">
-                    <label>Price (£) *</label>
+                    <label>Price / Info *</label>
                     <input
-                        type="number"
+                        type="text"
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
                         required
-                        step="0.01"
+                        placeholder="e.g., 100, Contact us, £10-£20"
                     />
                 </div>
 

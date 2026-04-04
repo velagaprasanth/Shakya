@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleSort, handleSubcategory } from '../../../../store/features/filterSlice';
+import { useNavigate } from 'react-router-dom';
+import { handleSort } from '../../../../store/features/filterSlice';
 import { supabaseAdmin } from '../../../../services/supabaseClient';
 import { getCache, setCache } from '../../../../utils/cache';
 import "./shopProducts.scss";
@@ -12,6 +13,7 @@ const ShopProducts = () => {
     const [sortValue, setSortValue] = useState('');
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const selectedCategory = useSelector((state) => state.products.selectedCategory);
     const selectedSubcategory = useSelector((state) => state.products.selectedSubcategory);
     const [subcategories, setSubcategories] = useState([]);
@@ -112,7 +114,7 @@ const ShopProducts = () => {
                             <div
                                 key={sub.id}
                                 className={`subcategory-circle-item ${selectedSubcategory === sub.name ? 'active-circle' : ''}`}
-                                onClick={() => dispatch(handleSubcategory(sub.name))}
+                                onClick={() => navigate(`/subcategory/${encodeURIComponent(sub.name)}`)}
                             >
                                 <div className="category-image-container" style={{ borderColor: selectedSubcategory === sub.name ? '#b8860b' : '#ccc' }}>   
                                     {sub.cover_image ? (

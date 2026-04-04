@@ -21,11 +21,11 @@ const ProductCard = (props) => {
                 <div className="product-prices d-flex">
                     {displayOldPrice ? (
                         <>
-                            <span className='old-price pe-2'>₹{displayOldPrice}</span>
-                            <span className='product-price'>₹{displayPrice}</span>
+                            <span className='old-price pe-2'>{displayOldPrice}</span>
+                            <span className='product-price'>{displayPrice}</span>
                         </>
                     ) : (
-                        <span className='product-price'>₹{displayPrice}</span>
+                        <span className='product-price'>{displayPrice}</span>
                     )}
                 </div>
             </div>
