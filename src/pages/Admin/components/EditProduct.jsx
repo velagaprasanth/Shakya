@@ -144,7 +144,8 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
                             value={formData.category} 
                             onChange={(e) => {
                                 const val = e.target.value;
-                                setFormData(prev => ({ ...prev, category: val, subcategory: '' }));
+                                const subs = allSubcategories.filter(s => s.category_name === val);
+                                setFormData(prev => ({ ...prev, category: val, subcategory: subs.length > 0 ? subs[0].name : '' }));
                             }} 
                             required
                         >
@@ -156,13 +157,11 @@ const EditProduct = ({ product, onClose, onProductUpdated }) => {
                     </div>
 
                     <div className="form-group">
-                        <label>Subcategory</label>
-                        <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange}>
-                            <option value="">-- No Subcategory --</option>
-                            {allSubcategories
-                                .filter(sub => sub.category_name === formData.category)
-                                .map(sub => (
-                                    <option key={sub.id} value={sub.name}>{sub.name}</option>
+                        <label>Subcategory *</label>
+                        <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange} required>
+                            <option value="">-- Select Subcategory --</option>
+                            {allSubcategories.map(sub => (
+                                <option key={sub.id} value={sub.name}>{sub.name}</option>
                             ))}
                         </select>
                     </div>

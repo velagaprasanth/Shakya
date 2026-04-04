@@ -34,13 +34,7 @@ const AddProduct = ({ onProductAdded }) => {
             setCategories(catRes.data || []);
             setAllSubcategories(subcatRes.data || []);
             
-            // Set first category as default if available
-            if (catRes.data && catRes.data.length > 0) {
-                setFormData(prev => ({
-                    ...prev,
-                    category: catRes.data[0].name
-                }));
-            }
+            // We won't set a default category here anymore so the user has to select one.
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -176,7 +170,7 @@ const AddProduct = ({ onProductAdded }) => {
             alert('Product added successfully!');
             setFormData({
                 title: '',
-                category: categories.length > 0 ? categories[0].name : '',
+                category: '',
                 subcategory: '',
                 content: '',
                 price: ''
@@ -216,7 +210,8 @@ const AddProduct = ({ onProductAdded }) => {
                         value={formData.category} 
                         onChange={(e) => {
                             const val = e.target.value;
-                            setFormData(prev => ({ ...prev, category: val, subcategory: '' }));
+                            const subs = allSubcategories.filter(s => s.category_name === val);
+                            setFormData(prev => ({ ...prev, category: val, subcategory: subs.length > 0 ? subs[0].name : '' }));
                         }} 
                         required
                     >
@@ -228,13 +223,11 @@ const AddProduct = ({ onProductAdded }) => {
                 </div>
 
                 <div className="form-group">
-                    <label>Subcategory</label>
-                    <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange}>
-                        <option value="">-- No Subcategory --</option>
-                        {allSubcategories
-                            .filter(sub => sub.category_name === formData.category)
-                            .map(sub => (
-                                <option key={sub.id} value={sub.name}>{sub.name}</option>
+                    <label>Subcategory *</label>
+                    <select name="subcategory" value={formData.subcategory || ''} onChange={handleChange} required>
+                        <option value="">-- Select Subcategory --</option>
+                        {allSubcategories.map(sub => (
+                            <option key={sub.id} value={sub.name}>{sub.name}</option>
                         ))}
                     </select>
                 </div>
