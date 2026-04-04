@@ -211,7 +211,15 @@ const AddProduct = ({ onProductAdded }) => {
 
                 <div className="form-group">
                     <label>Category *</label>
-                    <select name="category" value={formData.category} onChange={(e) => {handleChange(e); setFormData(p => ({...p, subcategory: ''}));}} required>
+                    <select 
+                        name="category" 
+                        value={formData.category} 
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setFormData(prev => ({ ...prev, category: val, subcategory: '' }));
+                        }} 
+                        required
+                    >
                         <option value="">-- Select Category --</option>
                         {categories.map(cat => (
                             <option key={cat.id} value={cat.name}>{cat.name}</option>
