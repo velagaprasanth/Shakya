@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ProductCard from '../../../../components/ProductCard/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,8 @@ const ShopProducts = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortValue, setSortValue] = useState('');
     const [loading, setLoading] = useState(true);
+    const [displayCount, setDisplayCount] = useState(12); // Start with 12 products
+    const observerTarget = useRef(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const selectedCategory = useSelector((state) => state.products.selectedCategory);
@@ -60,7 +62,34 @@ const ShopProducts = () => {
         const value = e.target.value;
         setSortValue(value);
         dispatch(handleSort(value));
+        setDisplayCount(12); // Reset to initial count when sorting changes
     };
+
+    // Intersection Observer for infinite scroll
+    useEffect(() => {
+        const target = observerTarget.current;
+        if (!target) return;
+
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting) {
+                    setDisplayCount(prev => prev + 12);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        observer.observe(target);
+
+        return () => {
+            observer.unobserve(target);
+        };
+    }, []);
+
+    // Reset displayCount when category or subcategory changes
+    useEffect(() => {
+        setDisplayCount(12);
+    }, [selectedCategory, selectedSubcategory]);
 
     const applyFilters = useCallback(() => {
         let filtered = [...products];
@@ -86,8 +115,11 @@ const ShopProducts = () => {
             filtered.sort((a, b) => b.price - a.price);
         }
 
+        // Display products based on current displayCount
+        filtered = filtered.slice(0, displayCount);
+
         setFilteredProducts(filtered);
-    }, [products, selectedCategory, selectedSubcategory, sortValue]);
+    }, [products, selectedCategory, selectedSubcategory, sortValue, displayCount]);
 
     useEffect(() => {
         fetchProductsAndSubcategories();
@@ -141,19 +173,29 @@ const ShopProducts = () => {
             {filteredProducts.length === 0 ? (
                 <p>No products found</p>
             ) : (
-                <div className="row">
-                    {filteredProducts.map((item) => (
-                        <ProductCard
-                            key={item.id}
-                            item={item}
-                            image={item.image}
-                            title={item.title}
-                            category={item.category}
-                            price={item.price}
-                            oldPrice={item.oldPrice}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="row">
+                        {filteredProducts.map((item) => (
+                            <ProductCard
+                                key={item.id}
+                                item={item}
+                                image={item.image}
+                                title={item.title}
+                                category={item.category}
+                                price={item.price}
+                                oldPrice={item.oldPrice}
+                            />
+                        ))}
+                    </div>
+                    {/* Observer target - always rendered for scroll detection */}
+                    <div ref={observerTarget} className="text-center py-4">
+                        {displayCount < products.length ? (
+                            <p className="text-muted">Scroll to load more products...</p>
+                        ) : (
+                            <p className="text-muted">All products loaded</p>
+                        )}
+                    </div>
+                </>
             )}
         </div>
     );

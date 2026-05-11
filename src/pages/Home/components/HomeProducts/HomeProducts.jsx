@@ -8,19 +8,23 @@ const HomeProducts = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [displayCount, setDisplayCount] = useState(null); // Will be set to total count
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
             
             // Check cache first
             const cachedData = getCache('products');
-            if (cachedData) {
+            if (cachedData && cachedData.length > 0) {
+                console.log('Using cached products:', cachedData.length);
                 setProducts(cachedData);
+                setDisplayCount(cachedData.length); // Show all cached products
                 setLoading(false);
                 return;
             }
             
+            console.log('Fetching fresh products from database');
             const { data, error } = await supabaseAdmin
                 .from('products')
                 .select('*')
@@ -28,28 +32,35 @@ const HomeProducts = () => {
 
             if (error) throw error;
             
+            const productData = data || [];
+            console.log('Fetched products:', productData.length);
+            
             // Cache for 30 minutes
-            setCache('products', data || [], 30);
-            setProducts(data || []);
+            setCache('products', productData, 30);
+            setProducts(productData);
+            setDisplayCount(productData.length); // Show all products
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     const applyFilters = useCallback(() => {
-        let filtered = [...products];
-
-        // Limit to 4 products for home page
-        filtered = filtered.slice(0, 4);
-
-        setFilteredProducts(filtered);
+        // Show all products (no limit)
+        setFilteredProducts(products);
     }, [products]);
+
+    // Intersection Observer for infinite scroll - REMOVED, showing all products now
+    // useEffect(() => {
+    //     const target = observerTarget.current;
+    //     if (!target) return;
+    //     ...observer code...
+    // }, []);
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [fetchProducts]);
 
     useEffect(() => {
         applyFilters();
