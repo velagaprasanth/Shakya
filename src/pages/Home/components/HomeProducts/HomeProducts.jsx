@@ -8,7 +8,6 @@ const HomeProducts = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [displayCount, setDisplayCount] = useState(null); // Will be set to total count
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -19,7 +18,6 @@ const HomeProducts = () => {
             if (cachedData && cachedData.length > 0) {
                 console.log('Using cached products:', cachedData.length);
                 setProducts(cachedData);
-                setDisplayCount(cachedData.length); // Show all cached products
                 setLoading(false);
                 return;
             }
@@ -38,7 +36,6 @@ const HomeProducts = () => {
             // Cache for 30 minutes
             setCache('products', productData, 30);
             setProducts(productData);
-            setDisplayCount(productData.length); // Show all products
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
